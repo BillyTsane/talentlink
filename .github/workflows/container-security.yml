@@ -7,6 +7,7 @@ on:
 jobs:
   trivy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -15,7 +16,7 @@ jobs:
         run: docker build -t talentlink-backend:scan .
 
       - name: Run Trivy scan
-        uses: uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: talentlink-backend:scan
           format: table

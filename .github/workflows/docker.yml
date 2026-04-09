@@ -22,17 +22,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract image metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository | lower }}/talentlink-backend
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository | lower }}/talentlink-backend:latest
-            ghcr.io/${{ github.repository | lower }}/talentlink-backend:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/talentlink-backend:latest
+            ghcr.io/${{ github.repository }}/talentlink-backend:${{ github.sha }}
