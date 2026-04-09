@@ -69,6 +69,10 @@ if os.getenv("GITHUB_ACTIONS") == "true":
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
         }
     }
+    MIGRATION_MODULES = {
+        "authx": None,
+        "users": None,
+    }
 else:
     DATABASES = {
         "default": {
@@ -107,9 +111,4 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-}
-
-MIGRATION_MODULES = {
-    "authx": "apps.authx.migrations",
-    "users": "apps.users.migrations",
 }

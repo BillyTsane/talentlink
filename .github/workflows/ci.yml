@@ -77,7 +77,7 @@ jobs:
       - name: Run migrations
         working-directory: backend
         run: |
-          python manage.py migrate
+          python manage.py migrate --run-syncdb --noinput
 
       - name: Run tests
         working-directory: backend
