@@ -6,5 +6,6 @@ User = get_user_model()
 class MeView(generics.RetrieveAPIView):
     serializer_class = UserMeSerializer
     permission_classes = [permissions.IsAuthenticated]
+
     def get_object(self):
         return self.request.user

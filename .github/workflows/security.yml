@@ -34,5 +34,9 @@ jobs:
           pip-audit -r requirements.txt
 
       - name: Run Semgrep
-        run: |
-          semgrep scan --config auto
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/ci
+            p/owasp-top-ten
