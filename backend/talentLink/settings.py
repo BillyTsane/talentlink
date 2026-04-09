@@ -23,8 +23,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
-    "apps.authx",
-    "apps.users",
+    "apps.authx.apps.AuthxConfig",
+    "apps.users.apps.UsersConfig",
 ]
 
 MIDDLEWARE = [
