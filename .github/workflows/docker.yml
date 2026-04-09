@@ -10,6 +10,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/talentlink-backend
 
     steps:
       - name: Checkout source
@@ -28,5 +30,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/talentlink-backend:latest
-            ghcr.io/${{ github.repository }}/talentlink-backend:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}

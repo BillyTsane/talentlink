@@ -31,6 +31,7 @@ jobs:
           - 6379:6379
 
     env:
+      GITHUB_ACTIONS: "true"
       DJANGO_SECRET_KEY: github-actions-secret
       DJANGO_DEBUG: "False"
       DJANGO_ALLOWED_HOSTS: 127.0.0.1,localhost
@@ -68,10 +69,17 @@ jobs:
         run: |
           flake8 . --exclude=.venv,__pycache__,migrations --max-line-length=100
 
+      - name: Django system check
+        working-directory: backend
+        run: |
+          python manage.py check
+
       - name: Run migrations
+        working-directory: backend
         run: |
           python manage.py migrate
 
       - name: Run tests
+        working-directory: backend
         run: |
           python manage.py test
