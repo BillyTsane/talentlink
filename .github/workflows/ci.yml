@@ -74,15 +74,6 @@ jobs:
         run: |
           python manage.py check
 
-      - name: Run migrations
-        working-directory: backend
-        run: |
-          python manage.py migrate contenttypes --noinput
-          python manage.py migrate auth --noinput
-          python manage.py migrate admin --noinput
-          python manage.py migrate sessions --noinput
-          python manage.py migrate --run-syncdb --noinput
-
       - name: Run tests
         working-directory: backend
         run: |
