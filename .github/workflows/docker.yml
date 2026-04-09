@@ -10,12 +10,19 @@ jobs:
     permissions:
       contents: read
       packages: write
-    env:
-      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/talentlink-backend
 
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/talentlink-backend
+          tags: |
+            type=raw,value=latest
+            type=sha
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -29,6 +36,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
