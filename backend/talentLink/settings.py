@@ -108,3 +108,8 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
+
+MIGRATION_MODULES = {
+    "authx": "apps.authx.migrations",
+    "users": "apps.users.migrations",
+}
