@@ -13,6 +13,22 @@ class UserMeSerializer(serializers.ModelSerializer):
 
 
 class AthleteProfileSerializer(serializers.ModelSerializer):
+    user = UserMeSerializer(read_only=True)
+
     class Meta:
         model = AthleteProfile
-        fields = ("sport", "position", "height_cm", "weight_kg", "bio")
+        fields = (
+            "id",
+            "user",
+            "sport",
+            "position",
+            "age",
+            "height_cm",
+            "weight_kg",
+            "bio",
+        )
+
+
+class RolesSerializer(serializers.Serializer):
+    value = serializers.CharField()
+    label = serializers.CharField()

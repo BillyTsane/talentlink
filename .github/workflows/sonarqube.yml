@@ -35,6 +35,15 @@ jobs:
           if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Run backend tests with coverage
+        env:
+          DJANGO_SECRET_KEY: sonarcloud-test-secret-key-with-safe-length-123456
+          DJANGO_DEBUG: "False"
+          DJANGO_ALLOWED_HOSTS: 127.0.0.1,localhost,testserver
+        run: |
+          coverage run --rcfile=.coveragerc backend/manage.py test apps.authx apps.users apps.videos apps.messaging apps.notifications
+          coverage xml
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602
         env:

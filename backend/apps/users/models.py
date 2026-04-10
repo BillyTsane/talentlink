@@ -10,6 +10,7 @@ class AthleteProfile(models.Model):
     )
     sport = models.CharField(max_length=64, blank=True, default="")
     position = models.CharField(max_length=64, blank=True, default="")
+    age = models.PositiveIntegerField(null=True, blank=True)
     height_cm = models.PositiveIntegerField(null=True, blank=True)
     weight_kg = models.PositiveIntegerField(null=True, blank=True)
     bio = models.TextField(blank=True, default="")

@@ -1,0 +1,16 @@
+[run]
+source = backend/apps
+omit =
+    */migrations/*
+    */tests.py
+    */admin.py
+    */apps.py
+    */__init__.py
+
+[report]
+omit =
+    */migrations/*
+    */tests.py
+    */admin.py
+    */apps.py
+    */__init__.py
