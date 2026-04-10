@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 
@@ -62,9 +63,24 @@ TEMPLATES = [
 WSGI_APPLICATION = "talentLink.wsgi.application"
 ASGI_APPLICATION = "talentLink.asgi.application"
 
+is_running_tests = "test" in sys.argv
 use_postgres = os.getenv("GITHUB_ACTIONS") == "true" or bool(os.getenv("POSTGRES_DB"))
 
-if use_postgres:
+if is_running_tests:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "test_db.sqlite3",
+        }
+    }
+    MIGRATION_MODULES = {
+        "authx": None,
+        "users": None,
+        "videos": None,
+        "messaging": None,
+        "notifications": None,
+    }
+elif use_postgres:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
