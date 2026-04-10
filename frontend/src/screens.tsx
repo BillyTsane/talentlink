@@ -161,6 +161,73 @@ export function OnboardingScreen({
   );
 }
 
+export function LoadingScreen() {
+  return (
+    <ScreenFrame>
+      <View style={styles.heroCard}>
+        <Text style={styles.heroTitle}>TalentLink</Text>
+        <Text style={styles.heroText}>Chargement de votre session...</Text>
+      </View>
+    </ScreenFrame>
+  );
+}
+
+export function LoginScreen({
+  username,
+  password,
+  errorMessage,
+  loading,
+  onUsernameChange,
+  onPasswordChange,
+  onSubmit,
+  onBack,
+}: {
+  username: string;
+  password: string;
+  errorMessage?: string;
+  loading?: boolean;
+  onUsernameChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onSubmit: () => void;
+  onBack: () => void;
+}) {
+  return (
+    <ScreenFrame title="Connexion" subtitle="Accède à ton espace TalentLink.">
+      <Pressable onPress={onBack} style={styles.backLink}>
+        <Text style={styles.contactLink}>← Retour</Text>
+      </Pressable>
+      <View style={styles.stack}>
+        <View style={styles.formField}>
+          <Text style={styles.formLabel}>Nom d'utilisateur</Text>
+          <TextInput
+            value={username}
+            onChangeText={onUsernameChange}
+            autoCapitalize="none"
+            placeholder="demo_player"
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.formField}>
+          <Text style={styles.formLabel}>Mot de passe</Text>
+          <TextInput
+            value={password}
+            onChangeText={onPasswordChange}
+            secureTextEntry
+            placeholder="••••••••"
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+          />
+        </View>
+      </View>
+      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+      <View style={styles.topGap}>
+        <PrimaryButton label={loading ? "Connexion..." : "Se connecter"} onPress={onSubmit} />
+      </View>
+    </ScreenFrame>
+  );
+}
+
 export function AuthChoiceScreen({
   roles,
   selectedRole,
@@ -204,10 +271,30 @@ export function AuthChoiceScreen({
 
 export function CreateProfileScreen({
   selectedRole,
+  form,
+  errorMessage,
+  loading,
+  onChangeForm,
   onBack,
   onFinish,
 }: {
   selectedRole: Role;
+  form: {
+    username: string;
+    email: string;
+    password: string;
+    country: string;
+    city: string;
+  };
+  errorMessage?: string;
+  loading?: boolean;
+  onChangeForm: (value: {
+    username: string;
+    email: string;
+    password: string;
+    country: string;
+    city: string;
+  }) => void;
   onBack: () => void;
   onFinish: () => void;
 }) {
@@ -215,12 +302,59 @@ export function CreateProfileScreen({
     <ScreenFrame title="Créer votre profil" subtitle={`Rôle sélectionné: ${selectedRole}`}>
       <View style={styles.profileAvatar} />
       <View style={styles.stack}>
-        {["Prénom", "Nom", "Âge", "Pays", "Sport", "Poste", "Taille", "Poids"].map((field) => (
-          <View key={field} style={styles.formField}>
-            <Text style={styles.formLabel}>{field}</Text>
-            <TextInput placeholder={field} placeholderTextColor={colors.textMuted} style={styles.input} />
-          </View>
-        ))}
+        <View style={styles.formField}>
+          <Text style={styles.formLabel}>Nom d'utilisateur</Text>
+          <TextInput
+            value={form.username}
+            onChangeText={(value) => onChangeForm({ ...form, username: value })}
+            autoCapitalize="none"
+            placeholder="nathan_durand"
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.formField}>
+          <Text style={styles.formLabel}>Email</Text>
+          <TextInput
+            value={form.email}
+            onChangeText={(value) => onChangeForm({ ...form, email: value })}
+            autoCapitalize="none"
+            placeholder="nathan@example.com"
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.formField}>
+          <Text style={styles.formLabel}>Mot de passe</Text>
+          <TextInput
+            value={form.password}
+            onChangeText={(value) => onChangeForm({ ...form, password: value })}
+            secureTextEntry
+            placeholder="Au moins 8 caractères"
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.formField}>
+          <Text style={styles.formLabel}>Pays</Text>
+          <TextInput
+            value={form.country}
+            onChangeText={(value) => onChangeForm({ ...form, country: value })}
+            placeholder="Cameroun"
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.formField}>
+          <Text style={styles.formLabel}>Ville</Text>
+          <TextInput
+            value={form.city}
+            onChangeText={(value) => onChangeForm({ ...form, city: value })}
+            placeholder="Douala"
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+          />
+        </View>
         <View style={styles.formField}>
           <Text style={styles.formLabel}>Bio courte</Text>
           <TextInput
@@ -232,12 +366,13 @@ export function CreateProfileScreen({
           />
         </View>
       </View>
+      {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
       <View style={styles.rowGap}>
         <View style={styles.flexButton}>
           <PrimaryButton label="Retour" onPress={onBack} variant="secondary" />
         </View>
         <View style={styles.flexButton}>
-          <PrimaryButton label="Terminer" onPress={onFinish} />
+          <PrimaryButton label={loading ? "Création..." : "Terminer"} onPress={onFinish} />
         </View>
       </View>
     </ScreenFrame>
@@ -683,6 +818,12 @@ const styles = StyleSheet.create({
   },
   buttonTextSecondary: {
     color: colors.card,
+  },
+  errorText: {
+    color: colors.danger,
+    fontSize: typography.body,
+    fontWeight: "700",
+    marginTop: spacing.md,
   },
   choiceCard: {
     backgroundColor: colors.card,

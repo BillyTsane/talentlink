@@ -6,7 +6,7 @@ import {
   notifications,
   settingsSections,
 } from "../data/mockData";
-import { DiscoverPlayer } from "../types";
+import { AuthSession, AuthUser, DiscoverPlayer, Role } from "../types";
 
 export const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_URL?.trim() || "http://localhost:8000/api";
@@ -25,6 +25,42 @@ export async function apiGet<T>(path: string): Promise<T> {
 
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+export async function apiPost<T>(path: string, payload: unknown, token?: string): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || `API request failed: ${response.status}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+export async function apiPatch<T>(path: string, payload: unknown, token: string): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || `API request failed: ${response.status}`);
   }
 
   return response.json() as Promise<T>;
@@ -65,4 +101,48 @@ export async function fetchDiscoverFeed(): Promise<DiscoverPlayer[]> {
 export async function fetchRoles(): Promise<RolesApiResponse["roles"]> {
   const response = await apiGet<RolesApiResponse>("/users/roles");
   return response.roles;
+}
+
+type LoginResponse = {
+  access: string;
+  refresh: string;
+};
+
+type RegisterPayload = {
+  username: string;
+  email: string;
+  password: string;
+  role: Role;
+  country: string;
+  city: string;
+};
+
+export async function login(username: string, password: string): Promise<AuthSession> {
+  const tokens = await apiPost<LoginResponse>("/auth/login", { username, password });
+  const user = await fetchMe(tokens.access);
+
+  return {
+    ...tokens,
+    user,
+  };
+}
+
+export async function register(payload: RegisterPayload): Promise<AuthSession> {
+  await apiPost("/auth/register", payload);
+  return login(payload.username, payload.password);
+}
+
+export async function fetchMe(token: string): Promise<AuthUser> {
+  const response = await fetch(`${API_BASE_URL}/users/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || `API request failed: ${response.status}`);
+  }
+
+  return response.json() as Promise<AuthUser>;
 }

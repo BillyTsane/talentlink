@@ -1,7 +1,9 @@
 export type Role = "player" | "club" | "agent";
 
 export type AppScreen =
+  | "boot"
   | "onboarding"
+  | "login"
   | "auth"
   | "create-profile"
   | "dashboard"
@@ -58,4 +60,19 @@ export type ClubProfile = {
   city: string;
   level: string;
   highlights: string[];
+};
+
+export type AuthUser = {
+  id: number;
+  username: string;
+  email: string;
+  role: Role;
+  country: string;
+  city: string;
+};
+
+export type AuthSession = {
+  access: string;
+  refresh: string;
+  user: AuthUser;
 };
