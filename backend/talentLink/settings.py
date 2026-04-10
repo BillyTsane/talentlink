@@ -9,7 +9,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    for host in os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,testserver").split(",")
     if host.strip()
 ]
 
@@ -23,8 +23,12 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_spectacular",
     "apps.authx.apps.AuthxConfig",
     "apps.users.apps.UsersConfig",
+    "apps.videos.apps.VideosConfig",
+    "apps.messaging.apps.MessagingConfig",
+    "apps.notifications.apps.NotificationsConfig",
 ]
 
 MIDDLEWARE = [
@@ -58,20 +62,18 @@ TEMPLATES = [
 WSGI_APPLICATION = "talentLink.wsgi.application"
 ASGI_APPLICATION = "talentLink.asgi.application"
 
-if os.getenv("GITHUB_ACTIONS") == "true":
+use_postgres = os.getenv("GITHUB_ACTIONS") == "true" or bool(os.getenv("POSTGRES_DB"))
+
+if use_postgres:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB", "talentlink_test"),
+            "NAME": os.getenv("POSTGRES_DB", "talentlink"),
             "USER": os.getenv("POSTGRES_USER", "postgres"),
             "PASSWORD": os.getenv("POSTGRES_PASSWORD", "postgres"),
             "HOST": os.getenv("POSTGRES_HOST", "127.0.0.1"),
             "PORT": os.getenv("POSTGRES_PORT", "5432"),
         }
-    }
-    MIGRATION_MODULES = {
-        "authx": None,
-        "users": None,
     }
 else:
     DATABASES = {
@@ -108,7 +110,15 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "TalentLink API",
+    "DESCRIPTION": "Backend API for TalentLink mobile MVP.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
