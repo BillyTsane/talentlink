@@ -186,4 +186,4 @@ Pull requests welcome. For major changes please open an issue first.
 
 ## 📄 License
 
-[MIT](LICENSE) © 2025 Billy Max Tsane Tsafack
+[MIT](LICENSE) © 2026 Billy Max Tsane Tsafack
